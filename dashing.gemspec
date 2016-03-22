@@ -6,9 +6,9 @@ require 'dashing/version'
 Gem::Specification.new do |spec|
   spec.name         = 'dashing-rails'
   spec.version      = Dashing::VERSION
-  spec.authors      = ['Pierre-Louis Gottfrois']
-  spec.email        = ['pierrelouis.gottfrois@gmail.com']
-  spec.description  = 'The exceptionally handsome dashboard framework for Rails.'
+  spec.authors      = ['Pierre-Louis Gottfrois', 'Amogh Kulkarni']
+  spec.email        = ['pierrelouis.gottfrois@gmail.com', 'amoghk.1991@gmail.com']
+  spec.description  = 'The exceptionally handsome dashboard framework for Rails with Date filters.'
   spec.summary      = 'The exceptionally handsome dashboard framework for Rails.'
   spec.homepage     = 'https://github.com/gottfrois/dashing-rails'
   spec.license      = 'MIT'

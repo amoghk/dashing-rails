@@ -9,6 +9,7 @@ module Dashing
     attr_accessor :redis_host, :redis_port, :redis_password, :redis_namespace, :redis_timeout
     attr_accessor :auth_token, :devise_allowed_models
     attr_accessor :jobs_path
+    attr_accessor :connection_uuid
     attr_accessor :default_dashboard, :dashboards_views_path, :dashboard_layout_path
     attr_accessor :widgets_views_path, :widgets_js_path, :widgets_css_path
     attr_accessor :engine_path, :scheduler
@@ -27,6 +28,9 @@ module Dashing
       # Authorization
       @auth_token             = nil
       @devise_allowed_models  = []
+
+      #Connection UUID Hash
+      @connection_uuid = {}
 
       # Jobs
       @jobs_path              = Rails.root.join('app', 'jobs')

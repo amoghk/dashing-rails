@@ -1,7 +1,7 @@
 module Dashing
   class << self
 
-    delegate :scheduler, :redis, to: :config
+    delegate :scheduler, :redis, :connection_uuid, to: :config
 
     attr_accessor :configuration
 
@@ -18,8 +18,21 @@ module Dashing
       files.sort.first
     end
 
-    def send_event(id, data)
-      redis.publish("#{Dashing.config.redis_namespace}.create", data.merge(id: id, updatedAt: Time.now.utc.to_i).to_json)
+    
+    def send_event(id, data, unicast_opts = {})
+      unicast = unicast_opts[:unicast]
+      conn_uuid = unicast_opts[:conn_uuid]
+      if unicast        
+        redis.publish(redis_namespace(conn_uuid), data.merge(id: id, updatedAt: Time.now.utc.to_i).to_json)
+      else
+        connection_uuid.each {|conn,state|          
+          redis.publish(redis_namespace(conn), data.merge(id: id, updatedAt: Time.now.utc.to_i).to_json)
+        }
+      end
+    end
+
+    def redis_namespace(conn_uuid)
+      "#{Dashing.config.redis_namespace}.#{conn_uuid}"
     end
 
   end
