@@ -10,9 +10,11 @@ module Dashing
       conn_value = {filter: {}, conn_uuid: conn_uuid, repo_name: repo_name, unicast: false}      
       $redis.set("conn_#{conn_uuid}", conn_value.to_json)
       @redis = Dashing.redis
-      redis_namespace_to_sub = conn_uuid ? "#{Dashing.config.redis_namespace}.#{conn_uuid}" : "#{Dashing.config.redis_namespace}.*"      
+      redis_namespace_to_sub = conn_uuid ? "#{Dashing.config.redis_namespace}.#{conn_uuid}" : "#{Dashing.config.redis_namespace}.*"
       @redis.subscribe(redis_namespace_to_sub) do |on|
         on.message do |event, data|
+          logger.info "REDIS-PUSUB #{data}"
+          raise IOError, 'Client terminated connection' if JSON.parse(data)["id"].eql? "terminate"
           response.stream.write("data: #{data}\n\n")
         end
       end
