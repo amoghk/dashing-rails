@@ -23,7 +23,11 @@ module Dashing
       @redis.quit
       response.stream.close
     end
-
+    def create
+      logger.info "[EVENT CONTROLLER Type: POST, conn_uuid: #{params[:id]}]"
+      Dashing.send_event('terminate', {connection: "terminate"}, {unicast:true, conn_uuid: params[:id]})
+      head :no_content
+    end
   end
 end
 

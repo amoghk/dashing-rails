@@ -163,5 +163,20 @@ source.addEventListener 'dashboards', (e) ->
   if data.dashboard is '*' or window.location.pathname is "/#{data.dashboard}"
     Dashing.fire data.event, data
 
+$(window).unload ->
+  console.log "Handler for .unload() called.";
+  source.close()
+  $.ajax
+    type: 'post'
+    url: '/dashing/events?id='+window.uuid
+    dataType: 'json'
+    cache: false
+    async: false
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log "AJAX Error: #{textStatus} #{errorThrown}"
+    success: (data, textStatus, jqXHR) ->
+      console.log "Successful AJAX call: #{data}"
+  console.log "Handler for .unload() ended.";
+
 $(document).ready ->
   Dashing.run()

@@ -1,6 +1,6 @@
 Dashing::Engine.routes.draw do
 
-  resources :events,      only: :index
+  resources :events,      only: [:index, :create]
 
   resources :dashboards,  only: :index do
     get '/:name', action: :show,    on: :collection
