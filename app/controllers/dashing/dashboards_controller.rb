@@ -10,7 +10,8 @@ module Dashing
     end
 
     def show
-      render file: dashboard_path(params[:name]), layout: Dashing.config.dashboard_layout_path
+      @dashboard_name = params[:name]
+      render :show, layout: Dashing.config.dashboard_layout_path
     end
 
     private
