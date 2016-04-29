@@ -104,6 +104,18 @@ setCookie = (name, value, days) ->
     expires = ""
   document.cookie = name + "=" + value + expires + "; path=/"
 
+sendConnectionCloseSignal = (conn_id) ->
+  $.ajax
+    type: 'post'
+    url: '/dashing/events?id='+conn_id
+    dataType: 'json'
+    cache: false
+    async: false
+    error: (jqXHR, textStatus, errorThrown) ->
+      console.log "AJAX Error: #{textStatus} #{errorThrown}"
+    success: (data, textStatus, jqXHR) ->
+      console.log "Successful AJAX call: #{data}"
+
 getCookie = (name) ->
   nameEQ = name + "="
   ca = document.cookie.split(";")
@@ -142,9 +154,10 @@ source.addEventListener 'error', (e)->
   console.log("Connection error", e)
   if (e.currentTarget.readyState == EventSource.CLOSED)
     console.log("Connection closed")
-    setTimeout (->
-      window.location.reload()
-    ), 5*60*1000
+#    setTimeout (->
+#      window.location.reload()
+#    ), 5*60*1000
+  sendConnectionCloseSignal(window.uuid)
 
 source.addEventListener 'message', (e) ->
   data = JSON.parse(e.data)
@@ -166,16 +179,7 @@ source.addEventListener 'dashboards', (e) ->
 $(window).unload ->
   console.log "Handler for .unload() called.";
   source.close()
-  $.ajax
-    type: 'post'
-    url: '/dashing/events?id='+window.uuid
-    dataType: 'json'
-    cache: false
-    async: false
-    error: (jqXHR, textStatus, errorThrown) ->
-      console.log "AJAX Error: #{textStatus} #{errorThrown}"
-    success: (data, textStatus, jqXHR) ->
-      console.log "Successful AJAX call: #{data}"
+  sendConnectionCloseSignal(window.uuid)
   console.log "Handler for .unload() ended.";
 
 $(document).ready ->
